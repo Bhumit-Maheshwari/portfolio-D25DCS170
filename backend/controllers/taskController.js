@@ -1,43 +1,81 @@
 const Task = require('../models/taskModel');
 
-// GET /tasks
-const getAllTasks = (req, res) => {
-    const tasks = Task.getAllTasks();
-    res.status(200).json(tasks);
-};
-
-// POST /tasks
-const createTask = (req, res) => {
-    const { title } = req.body;
-
-    if (!title || title.trim() === '') {
-        return res.status(400).json({ error: 'Task title is required' });
+// GET /tasks — Retrieve all tasks from MongoDB
+const getAllTasks = async (req, res, next) => {
+    try {
+        const tasks = await Task.find().sort({ createdAt: -1 });
+        res.status(200).json(tasks);
+    } catch (err) {
+        next(err);
     }
-
-    const newTask = Task.createTask(title);
-    res.status(201).json(newTask);
 };
 
-// PUT /tasks/:id
-const updateTask = (req, res) => {
-    const task = Task.updateTask(req.taskId, req.body);
+// GET /tasks/:id — Retrieve a single task by ID
+const getTaskById = async (req, res, next) => {
+    try {
+        const task = await Task.findById(req.taskId);
 
-    if (!task) {
-        return res.status(404).json({ error: `Task with ID ${req.taskId} not found` });
+        if (!task) {
+            return res.status(404).json({ error: `Task with ID ${req.taskId} not found` });
+        }
+
+        res.status(200).json(task);
+    } catch (err) {
+        next(err);
     }
-
-    res.status(200).json(task);
 };
 
-// DELETE /tasks/:id
-const deleteTask = (req, res) => {
-    const task = Task.deleteTask(req.taskId);
-
-    if (!task) {
-        return res.status(404).json({ error: `Task with ID ${req.taskId} not found` });
+// POST /tasks — Create a new task in MongoDB
+const createTask = async (req, res, next) => {
+    try {
+        const newTask = await Task.create(req.body);
+        res.status(201).json(newTask);
+    } catch (err) {
+        // Handle Mongoose validation errors with structured JSON
+        if (err.name === 'ValidationError') {
+            const messages = Object.values(err.errors).map((e) => e.message);
+            return res.status(400).json({ error: 'Validation failed', details: messages });
+        }
+        next(err);
     }
-
-    res.status(200).json({ message: 'Task deleted', task });
 };
 
-module.exports = { getAllTasks, createTask, updateTask, deleteTask };
+// PUT /tasks/:id — Update a task in MongoDB
+const updateTask = async (req, res, next) => {
+    try {
+        const task = await Task.findByIdAndUpdate(req.taskId, req.body, {
+            returnDocument: 'after', // Return updated document
+            runValidators: true,     // Apply schema validation on update
+        });
+
+        if (!task) {
+            return res.status(404).json({ error: `Task with ID ${req.taskId} not found` });
+        }
+
+        res.status(200).json(task);
+    } catch (err) {
+        // Handle Mongoose validation errors with structured JSON
+        if (err.name === 'ValidationError') {
+            const messages = Object.values(err.errors).map((e) => e.message);
+            return res.status(400).json({ error: 'Validation failed', details: messages });
+        }
+        next(err);
+    }
+};
+
+// DELETE /tasks/:id — Delete a task from MongoDB
+const deleteTask = async (req, res, next) => {
+    try {
+        const task = await Task.findByIdAndDelete(req.taskId);
+
+        if (!task) {
+            return res.status(404).json({ error: `Task with ID ${req.taskId} not found` });
+        }
+
+        res.status(200).json({ message: 'Task deleted', task });
+    } catch (err) {
+        next(err);
+    }
+};
+
+module.exports = { getAllTasks, getTaskById, createTask, updateTask, deleteTask };

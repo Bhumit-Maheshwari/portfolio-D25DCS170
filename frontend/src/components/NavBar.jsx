@@ -20,6 +20,11 @@ function NavBar({ darkMode, toggleDarkMode }) {
                     </Link>
                 </li>
                 <li>
+                    <Link to="/tasks" className={location.pathname === '/tasks' ? 'active' : ''}>
+                        Tasks
+                    </Link>
+                </li>
+                <li>
                     <Link to="/contact" className={location.pathname === '/contact' ? 'active' : ''}>
                         Contact
                     </Link>

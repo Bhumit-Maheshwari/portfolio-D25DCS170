@@ -610,6 +610,393 @@ main {
   color: #fff;
 }
 
+/* ----- Tasks Page ----- */
+.tasks-page {
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.tasks-page h1 {
+  margin-bottom: 6px;
+}
+
+.task-form {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.app.dark .task-form {
+  background: #16213e;
+  border-color: #2a2a4a;
+}
+
+.task-form-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.task-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  background: #fafafa;
+  color: #333;
+  outline: none;
+}
+
+.app.dark .task-input {
+  background: #0f172a;
+  border-color: #2a2a4a;
+  color: #d1d5db;
+}
+
+.task-input:focus {
+  border-color: #2563eb;
+}
+
+.task-desc-input {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.task-select {
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  background: #fafafa;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+}
+
+.app.dark .task-select {
+  background: #0f172a;
+  border-color: #2a2a4a;
+  color: #d1d5db;
+}
+
+.task-add-btn {
+  width: 100%;
+  padding: 11px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.task-add-btn:hover {
+  background: #1d4ed8;
+}
+
+.task-add-btn:disabled {
+  background: #93c5fd;
+  cursor: not-allowed;
+}
+
+/* ----- Task List ----- */
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tasks-empty {
+  text-align: center;
+  padding: 50px 20px;
+  color: #888;
+  background: #fff;
+  border: 1px dashed #d1d5db;
+  border-radius: 10px;
+}
+
+.app.dark .tasks-empty {
+  background: #16213e;
+  border-color: #2a2a4a;
+  color: #6b7280;
+}
+
+.task-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.app.dark .task-card {
+  background: #16213e;
+  border-color: #2a2a4a;
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  border-color: #bfdbfe;
+}
+
+.app.dark .task-card:hover {
+  border-color: #2a4a7f;
+}
+
+.task-card.task-done {
+  opacity: 0.65;
+}
+
+.task-card-left {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  flex: 1;
+  min-width: 0;
+}
+
+.task-checkbox {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.task-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-info h3 {
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.task-title-done {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+.task-description {
+  font-size: 0.83rem;
+  color: #666;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.app.dark .task-description {
+  color: #9ca3af;
+}
+
+.task-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.priority-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.priority-low {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.app.dark .priority-low {
+  background: #14532d;
+  color: #4ade80;
+}
+
+.priority-medium {
+  background: #fef9c3;
+  color: #ca8a04;
+}
+
+.app.dark .priority-medium {
+  background: #422006;
+  color: #facc15;
+}
+
+.priority-high {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.app.dark .priority-high {
+  background: #450a0a;
+  color: #f87171;
+}
+
+.task-date {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.task-delete-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+
+.task-delete-btn:hover {
+  opacity: 1;
+}
+
+/* ----- Confirmation Dialog ----- */
+.confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.confirm-dialog {
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px;
+  width: 340px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.app.dark .confirm-dialog {
+  background: #1e293b;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.confirm-dialog h3 {
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.confirm-dialog p {
+  color: #666;
+  font-size: 0.88rem;
+  margin-bottom: 20px;
+}
+
+.app.dark .confirm-dialog p {
+  color: #9ca3af;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.confirm-cancel {
+  padding: 8px 22px;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.app.dark .confirm-cancel {
+  background: #2a2a4a;
+  border-color: #4a4a6a;
+  color: #d1d5db;
+}
+
+.confirm-cancel:hover {
+  background: #e5e7eb;
+}
+
+.app.dark .confirm-cancel:hover {
+  background: #3a3a5a;
+}
+
+.confirm-delete {
+  padding: 8px 22px;
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.confirm-delete:hover {
+  background: #b91c1c;
+}
+
+/* ----- Toast Notifications ----- */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2000;
+}
+
+.toast {
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  animation: toastSlide 0.3s ease;
+  min-width: 260px;
+}
+
+@keyframes toastSlide {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.toast-success {
+  background: #16a34a;
+}
+
+.toast-error {
+  background: #dc2626;
+}
+
 /* ----- Footer ----- */
 footer {
   text-align: center;
@@ -649,4 +1036,18 @@ footer {
   .projects-grid {
     grid-template-columns: 1fr;
   }
+
+  .task-form-row {
+    flex-direction: column;
+  }
+
+  .toast-container {
+    left: 14px;
+    right: 14px;
+  }
+
+  .toast {
+    min-width: auto;
+  }
 }
+

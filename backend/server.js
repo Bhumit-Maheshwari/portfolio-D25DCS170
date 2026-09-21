@@ -1,5 +1,7 @@
 const express = require('express');
+const cors = require('cors');
 const { PORT } = require('./config/config');
+const connectDB = require('./config/db');
 const logger = require('./middleware/logger');
 const validateContentType = require('./middleware/validateContentType');
 const errorHandler = require('./middleware/errorHandler');
@@ -7,7 +9,11 @@ const taskRoutes = require('./routes/taskRoutes');
 
 const app = express();
 
+// ===== Connect to MongoDB =====
+connectDB();
+
 // ===== Global Middleware =====
+app.use(cors());
 app.use(express.json());
 app.use(logger);
 app.use(validateContentType);

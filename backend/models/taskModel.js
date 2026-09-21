@@ -1,37 +1,42 @@
-// In-memory data store (replaces database for now)
-let tasks = [
-    { id: 1, title: 'Learn Express', completed: false },
-    { id: 2, title: 'Build REST API', completed: false },
-    { id: 3, title: 'Test with Postman', completed: false }
-];
+const mongoose = require('mongoose');
 
-let nextId = 4;
+// ===== Task Schema Definition =====
+const taskSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: [true, 'Task title is required'],
+    },
+    description: {
+        type: String,
+        default: '',
+    },
+    completed: {
+        type: Boolean,
+        default: false,
+    },
+    priority: {
+        type: String,
+        enum: {
+            values: ['low', 'medium', 'high'],
+            message: 'Priority must be low, medium, or high',
+        },
+        default: 'medium',
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+});
 
-const getAllTasks = () => tasks;
+// ===== Pre-save Hook =====
+// Automatically trims whitespace from title before saving
+taskSchema.pre('save', function () {
+    if (this.title) {
+        this.title = this.title.trim();
+    }
+});
 
-const getTaskById = (id) => tasks.find((t) => t.id === id);
+// ===== Export Model =====
+const Task = mongoose.model('Task', taskSchema);
 
-const createTask = (title) => {
-    const newTask = { id: nextId++, title: title.trim(), completed: false };
-    tasks.push(newTask);
-    return newTask;
-};
-
-const updateTask = (id, updates) => {
-    const task = tasks.find((t) => t.id === id);
-    if (!task) return null;
-
-    if (updates.title !== undefined) task.title = updates.title.trim();
-    if (updates.completed !== undefined) task.completed = updates.completed;
-
-    return task;
-};
-
-const deleteTask = (id) => {
-    const index = tasks.findIndex((t) => t.id === id);
-    if (index === -1) return null;
-
-    return tasks.splice(index, 1)[0];
-};
-
-module.exports = { getAllTasks, getTaskById, createTask, updateTask, deleteTask };
+module.exports = Task;
