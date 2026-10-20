@@ -6,6 +6,7 @@ const logger = require('./middleware/logger');
 const validateContentType = require('./middleware/validateContentType');
 const errorHandler = require('./middleware/errorHandler');
 const taskRoutes = require('./routes/taskRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -18,7 +19,11 @@ app.use(express.json());
 app.use(logger);
 app.use(validateContentType);
 
-// ===== Routes =====
+// ===== Auth Routes (Public: /register, /login; Protected: /me) =====
+app.use('/auth', authRoutes);
+app.use('/', authRoutes); // Supports POST /register and POST /login directly
+
+// ===== Protected Task Routes =====
 app.use('/tasks', taskRoutes);
 
 // ===== 404 Handler =====

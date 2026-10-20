@@ -1,9 +1,12 @@
 const Task = require('../models/taskModel');
 
-// GET /tasks — Retrieve all tasks from MongoDB
+// GET /tasks — Retrieve all tasks for the authenticated user from MongoDB
 const getAllTasks = async (req, res, next) => {
     try {
-        const tasks = await Task.find().sort({ createdAt: -1 });
+        const query = req.user
+            ? { $or: [{ user: req.user._id }, { user: { $exists: false } }, { user: null }] }
+            : {};
+        const tasks = await Task.find(query).sort({ createdAt: -1 });
         res.status(200).json(tasks);
     } catch (err) {
         next(err);
@@ -28,7 +31,11 @@ const getTaskById = async (req, res, next) => {
 // POST /tasks — Create a new task in MongoDB
 const createTask = async (req, res, next) => {
     try {
-        const newTask = await Task.create(req.body);
+        const taskData = {
+            ...req.body,
+            user: req.user ? req.user._id : undefined,
+        };
+        const newTask = await Task.create(taskData);
         res.status(201).json(newTask);
     } catch (err) {
         // Handle Mongoose validation errors with structured JSON
