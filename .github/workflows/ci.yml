@@ -1,0 +1,52 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    name: Build & Test Full-Stack App
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out code from GitHub
+      - name: 1. Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Setup Node.js runtime environment
+      - name: 2. Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      # Step 3: Install dependencies as defined step (npm install)
+      - name: 3. Install backend dependencies (npm install)
+        working-directory: ./backend
+        run: npm install
+
+      - name: 4. Install frontend dependencies (npm install)
+        working-directory: ./frontend
+        run: npm install
+
+      # Step 4: Run automated tests and report pass/fail
+      - name: 5. Run backend automated tests (npm test)
+        working-directory: ./backend
+        run: npm test
+
+      # Step 5: Validate frontend code quality & production build
+      - name: 6. Lint frontend code (oxlint)
+        working-directory: ./frontend
+        run: npm run lint
+
+      - name: 7. Build React production bundle (vite build)
+        working-directory: ./frontend
+        run: npm run build
