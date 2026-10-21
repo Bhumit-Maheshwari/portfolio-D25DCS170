@@ -33,6 +33,10 @@ const taskSchema = new mongoose.Schema({
     },
 });
 
+// ===== Practical 9: Query Optimization Indexing =====
+// Compound index on user and createdAt speeds up sorted task queries (IXSCAN instead of COLLSCAN)
+taskSchema.index({ user: 1, createdAt: -1 });
+
 // ===== Pre-save Hook =====
 // Automatically trims whitespace from title before saving
 taskSchema.pre('save', function () {

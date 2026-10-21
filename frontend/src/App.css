@@ -1162,6 +1162,178 @@ main {
   color: #fff;
 }
 
+/* ==========================================
+   Practical 8: Lazy Loading & Fallback UI
+   ========================================== */
+.lazy-loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 380px;
+  width: 100%;
+  padding: 40px 16px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.lazy-loading-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 36px 32px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+}
+
+.app.dark .lazy-loading-card {
+  background: #16213e;
+  border-color: #2a2a4a;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* Dual Ring Spinner */
+.lazy-spinner-ring {
+  display: inline-block;
+  position: relative;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 20px;
+}
+
+.lazy-spinner-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  margin: 6px;
+  border: 4px solid #2563eb;
+  border-radius: 50%;
+  animation: lazyRing 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #2563eb transparent transparent transparent;
+}
+
+.app.dark .lazy-spinner-ring div {
+  border-color: #60a5fa transparent transparent transparent;
+}
+
+.lazy-spinner-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lazy-spinner-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lazy-spinner-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+
+@keyframes lazyRing {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.lazy-loading-title {
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.app.dark .lazy-loading-title {
+  color: #f3f4f6;
+}
+
+.lazy-loading-subtitle {
+  margin: 0 0 24px 0;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.app.dark .lazy-loading-subtitle {
+  color: #9ca3af;
+}
+
+/* Skeleton preview */
+.lazy-skeleton-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.lazy-skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  width: 100%;
+}
+
+.app.dark .lazy-skeleton-line {
+  background: linear-gradient(90deg, #1f293d 25%, #2a374f 50%, #1f293d 75%);
+  background-size: 200% 100%;
+}
+
+.lazy-skeleton-line.short {
+  width: 60%;
+  align-self: center;
+}
+
+.lazy-skeleton-line.medium {
+  width: 80%;
+  align-self: center;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.lazy-loading-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+}
+
+.app.dark .lazy-loading-badge {
+  background: #1e3a8a33;
+  color: #93c5fd;
+  border-color: #1e40af;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* ----- Footer ----- */
 footer {
   text-align: center;

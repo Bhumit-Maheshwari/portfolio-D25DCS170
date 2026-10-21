@@ -16,6 +16,20 @@ connectDB();
 // ===== Global Middleware =====
 app.use(cors());
 app.use(express.json());
+
+// Practical 9: Response-time tracking header middleware for performance benchmarking
+app.use((req, res, next) => {
+    const start = process.hrtime();
+    const originalSend = res.send;
+    res.send = function (body) {
+        const diff = process.hrtime(start);
+        const timeInMs = (diff[0] * 1e3 + diff[1] * 1e-6).toFixed(2);
+        res.set('X-Response-Time', `${timeInMs}ms`);
+        return originalSend.call(this, body);
+    };
+    next();
+});
+
 app.use(logger);
 app.use(validateContentType);
 
