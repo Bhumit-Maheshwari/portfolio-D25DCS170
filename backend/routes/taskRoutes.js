@@ -16,6 +16,7 @@ router.use(authMiddleware);
 // [Auth Middleware] -> [Validation Middleware] -> Controller
 router.get('/', taskController.getAllTasks);
 router.get('/cache/stats', taskController.getCacheStats);
+router.get('/notifications', taskController.getNotifications);
 router.get('/:id', validateTaskId, taskController.getTaskById);
 router.post('/', validateTaskCreate, taskController.createTask);
 router.put('/:id', validateTaskId, validateTaskUpdate, taskController.updateTask);

@@ -4,6 +4,10 @@ const {
     getTaskCacheKey,
     invalidateTaskCache,
 } = require('../config/cache');
+const {
+    taskEvents,
+    getNotificationLogs,
+} = require('../events/taskEventEmitter');
 
 // GET /tasks — Retrieve all tasks for the authenticated user from MongoDB (with node-cache)
 const getAllTasks = async (req, res, next) => {
@@ -51,7 +55,7 @@ const getTaskById = async (req, res, next) => {
     }
 };
 
-// POST /tasks — Create a new task in MongoDB (and invalidate cache)
+// POST /tasks — Create a new task in MongoDB, invalidate cache, & emit 'task-created' asynchronously
 const createTask = async (req, res, next) => {
     try {
         const taskData = {
@@ -60,11 +64,47 @@ const createTask = async (req, res, next) => {
         };
         const newTask = await Task.create(taskData);
 
-        // Invalidate cache so stale data is never served on subsequent reads
+        // Invalidate cache so stale data is never served on subsequent reads (Practical 9)
         invalidateTaskCache(req.user ? req.user._id : null);
         res.set('X-Cache-Invalidated', 'true');
 
-        res.status(201).json(newTask);
+        // Check if synchronous mode was explicitly requested for demonstration
+        const isSync = req.query.mode === 'sync' || req.headers['x-execution-mode'] === 'sync';
+
+        if (isSync) {
+            // Synchronous Demonstration: blocks before returning response
+            const syncStartTime = new Date();
+            const startMs = Date.now();
+            // Simulate synchronous 100ms blocking work
+            while (Date.now() - startMs < 100) {}
+            const syncFinishTime = new Date().toISOString();
+
+            console.log('\n[SYNCHRONOUS EXECUTION]');
+            console.log(`   Task Title:          "${newTask.title}"`);
+            console.log(`   Handler Started At:  ${syncStartTime.toISOString()}`);
+            console.log(`   Handler Finished At: ${syncFinishTime}`);
+            console.log('   API Response delayed until handler finished (~100ms delay)\n');
+
+            res.set('X-Execution-Mode', 'synchronous');
+            return res.status(201).json(newTask);
+        }
+
+        // Asynchronous Execution (Practical 10 Default):
+        // 1. Record API response timestamp
+        const apiResponseTimestamp = new Date().toISOString();
+        console.log(`\n[API RESPONSE] (201 Created) Returned immediately to client at: ${apiResponseTimestamp}`);
+
+        // 2. Emit 'task-created' event handled in background without blocking API
+        taskEvents.emit('task-created', {
+            taskId: newTask._id,
+            title: newTask.title,
+            user: req.user ? (req.user.username || req.user.email || req.user._id) : 'Unassigned',
+            apiResponseTime: apiResponseTimestamp,
+        });
+
+        // 3. Return response immediately before event handler executes
+        res.set('X-Execution-Mode', 'asynchronous');
+        return res.status(201).json(newTask);
     } catch (err) {
         // Handle Mongoose validation errors with structured JSON
         if (err.name === 'ValidationError') {
@@ -133,6 +173,16 @@ const getCacheStats = (req, res) => {
     });
 };
 
+// GET /tasks/notifications — Inspect background event notifications (Practical 10)
+const getNotifications = (req, res) => {
+    const logs = getNotificationLogs();
+    res.status(200).json({
+        message: 'Background event-driven notification logs',
+        count: logs.length,
+        notifications: logs,
+    });
+};
+
 module.exports = {
     getAllTasks,
     getTaskById,
@@ -140,4 +190,5 @@ module.exports = {
     updateTask,
     deleteTask,
     getCacheStats,
+    getNotifications,
 };
