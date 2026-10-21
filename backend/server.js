@@ -7,6 +7,7 @@ const validateContentType = require('./middleware/validateContentType');
 const errorHandler = require('./middleware/errorHandler');
 const taskRoutes = require('./routes/taskRoutes');
 const authRoutes = require('./routes/authRoutes');
+const aiRoutes = require('./routes/aiRoutes');
 
 const app = express();
 
@@ -39,6 +40,10 @@ app.use('/', authRoutes); // Supports POST /register and POST /login directly
 
 // ===== Protected Task Routes =====
 app.use('/tasks', taskRoutes);
+
+// ===== Practical 13: AI Assistant Routes =====
+app.use('/api/ai', aiRoutes);
+app.use('/ai', aiRoutes);
 
 // ===== 404 Handler =====
 app.use((req, res) => {

@@ -49,4 +49,17 @@ test('Practical 12: Task Management CI Test Suite', async (t) => {
         assert.strictEqual(allowedPriorities.includes('medium'), true);
         assert.strictEqual(allowedPriorities.includes('critical'), false);
     });
+
+    await t.test('5. Practical 13 AI Assistant: generates contextual descriptions and priorities', () => {
+        const { generateFallbackSuggestion } = require('../controllers/aiController');
+
+        const urgentTask = generateFallbackSuggestion('Fix critical auth token leakage');
+        assert.strictEqual(urgentTask.suggestedPriority, 'high');
+        assert.ok(urgentTask.description.includes('Fix critical auth token leakage'));
+        assert.strictEqual(urgentTask.checklist.length, 3);
+
+        const lowTask = generateFallbackSuggestion('Read optional styling guide');
+        assert.strictEqual(lowTask.suggestedPriority, 'low');
+    });
 });
+

@@ -9,6 +9,7 @@ import {
     getToken,
     removeToken,
     getUser,
+    generateAiDescription,
 } from '../api';
 
 function Tasks() {
@@ -32,6 +33,10 @@ function Tasks() {
     const [description, setDescription] = useState('');
     const [priority, setPriority] = useState('medium');
     const [formLoading, setFormLoading] = useState(false);
+
+    // Practical 13: AI Assistant state
+    const [aiLoading, setAiLoading] = useState(false);
+    const [aiSuggestion, setAiSuggestion] = useState(null);
 
     // ===== Toast helper =====
     const showToast = (message, type = 'success') => {
@@ -148,6 +153,35 @@ function Tasks() {
             showToast(err.message, 'error');
         } finally {
             setFormLoading(false);
+        }
+    };
+
+    // ===== Practical 13: AI Assistant Generator =====
+    const handleAiGenerate = async () => {
+        if (!title.trim()) {
+            showToast('Please type a task title first to generate AI suggestions', 'error');
+            return;
+        }
+        setAiLoading(true);
+        try {
+            const res = await generateAiDescription(title.trim());
+            if (res.success) {
+                setDescription(res.description);
+                if (res.suggestedPriority) {
+                    setPriority(res.suggestedPriority);
+                }
+                setAiSuggestion(res);
+                showToast(
+                    res.source === 'fallback-engine'
+                        ? '✨ Smart suggestions generated via Fallback Engine'
+                        : `✨ AI description generated via ${res.model || 'AI'}!`,
+                    'success'
+                );
+            }
+        } catch (err) {
+            showToast(err.message || 'AI request failed', 'error');
+        } finally {
+            setAiLoading(false);
         }
     };
 
@@ -322,10 +356,61 @@ function Tasks() {
                                 <option value="high">🔴 High</option>
                             </select>
                         </div>
+
+                        {/* Practical 13: AI Auto-fill Button */}
+                        <div className="ai-action-bar">
+                            <button
+                                type="button"
+                                className="ai-btn"
+                                onClick={handleAiGenerate}
+                                disabled={aiLoading || !title.trim()}
+                                title="Auto-generate description & suggest priority using AI"
+                            >
+                                {aiLoading ? '✨ Analyzing Task with AI...' : '✨ Auto-Generate with AI (Gemini / OpenAI)'}
+                            </button>
+                        </div>
+
+                        {/* Practical 13: AI Suggestion Preview Box */}
+                        {aiSuggestion && (
+                            <div className="ai-suggestion-card">
+                                <div className="ai-suggestion-top">
+                                    <span className="ai-badge">
+                                        ✨ {aiSuggestion.model || 'AI Assistant'}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        className="ai-dismiss-btn"
+                                        onClick={() => setAiSuggestion(null)}
+                                        title="Dismiss AI Suggestion"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+                                <p className="ai-desc-preview">
+                                    <strong>AI Description:</strong> {aiSuggestion.description}
+                                </p>
+                                <div className="ai-meta-row">
+                                    <span className="ai-priority-tag">
+                                        Recommended Priority: <strong>{aiSuggestion.suggestedPriority?.toUpperCase()}</strong>
+                                    </span>
+                                    {aiSuggestion.checklist && aiSuggestion.checklist.length > 0 && (
+                                        <div className="ai-checklist-wrapper">
+                                            <span className="ai-checklist-label">Recommended Checklist:</span>
+                                            <ul className="ai-checklist">
+                                                {aiSuggestion.checklist.map((item, idx) => (
+                                                    <li key={idx}>✓ {item}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
                         <input
                             type="text"
                             className="task-input task-desc-input"
-                            placeholder="Description (optional)"
+                            placeholder="Description (optional, or click Auto-Generate with AI above)"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                         />

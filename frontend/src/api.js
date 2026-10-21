@@ -139,3 +139,19 @@ export const deleteTask = async (id) => {
     }
     return data;
 };
+
+// ===== Practical 13: AI Assistant API Call =====
+// Calls server-side endpoint which securely holds AI API keys
+export const generateAiDescription = async (title) => {
+    const res = await fetch(`${BASE_URL}/api/ai/generate-description`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+        throw new Error(data.error || 'Failed to generate AI suggestion');
+    }
+    return data;
+};
+
